@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+	<title>MongoDB Web Query</title> 
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css" />
+
+    <link rel="stylesheet" th:href="@{/css/queryForm.css}"/>
+
+	<script>
+		$(function() {
+			$('input[name="dateRange"]').daterangepicker({
+				opens: 'left'
+				}, function(start, end, label) {
+					console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="contact-form">
+		<h2> Query Form</h2>
+		<form action="#" th:object="${query}" th:action="@{query}" method="post">
+			<fieldset>
+				<label for="dateRange">
+					<span class="required">Date Range: *</span> 
+					<input type="text" th:field="*{dateRange}" name="dateRange" /> <br>
+				</label>
+				<label for="availableCollections">Available Query Types: </label>
+				<select id="queryType" name="queryType" th:field="*{queryType}">
+					<option th:each="queryType : ${availableQueryTypes}" th:value="${queryType}" th:text="${queryType}"></option>
+				</select> <br>
+			
+				<label for="availableCollections">Available Collections: </label>
+				<select id="collection" name="collection" th:field="*{collection}">
+					<option th:each="collection : ${availableCollections}" th:value="${collection}" th:text="${collection}"></option>
+				</select> <br>
+			
+				<label for="availableEnvs">Available Environments: </label>
+				<select id="env" name="env" th:field="*{env}">
+					<option th:each="env : ${availableEnvs}" th:value="${env}" th:text="${env}"></option>
+				</select> <br>
+ 
+				<label for="availableNodes">Available Clusters: </label>
+				<select id="node" name="node" th:field="*{cluster}">
+					<option th:each="node : ${availableNodes}" th:value="${node}" th:text="${node}"></option>
+				</select> <br>
+				
+				<input class="ui-button ui-widget ui-corner-all" type="submit" value="Submit"/>
+				
+ 			</fieldset>
+ 		</form>
+	</div>
+</body>
+</html>
