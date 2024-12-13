@@ -100,23 +100,14 @@ public class QueryController {
 	 */
 	@PostMapping("/query")
 	public String query(@ModelAttribute Query query, Model model)
-	{
-		System.out.println("Got inside the query end point!");
-		
+	{		
 		System.out.println(query.toString());
-		
-		model.addAttribute("query", query);
-		
+				
 		List<String> queryTypes = new ArrayList<String>();
 		queryTypes.add("summary");
 		queryTypes.add("verbose");
 		
 		DistinctRepoUtil distictUtils = new DistinctRepoUtil();
-		
-		Query defaultQuery = new Query();
-		defaultQuery.setDateRange(DateUtils.getLastTwoWeeksForGui());
-		
-	    model.addAttribute("query", defaultQuery);
 	    			
 		model.addAttribute("availableQueryTypes", queryTypes);
 		
@@ -124,6 +115,9 @@ public class QueryController {
 				DistictFields.COLLECTION));
 		model.addAttribute("availableEnvs", distictUtils.getDistinctValues(mongoTemplate, DistictFields.ENV));
 		model.addAttribute("availableNodes", distictUtils.getDistinctValues(mongoTemplate, DistictFields.NODE));
+		
+		model.addAttribute("query", query);
+
 		try
 		{
 			List<LogEntry> logEntries = getLogEntries(query);
