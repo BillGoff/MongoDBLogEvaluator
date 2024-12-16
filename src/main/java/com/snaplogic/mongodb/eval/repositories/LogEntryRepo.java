@@ -24,5 +24,7 @@ public interface LogEntryRepo extends MongoRepository<LogEntry, String> {
 	List<LogEntry> findBylogEntryDateBetweenAndCollectionAndEnvAndNode(Date startDate, Date endDate, String collection, String env, String node);
 	
 	List<LogEntry> findBylogEntryDateBetweenAndEnvAndNode(Date startDate, Date endDate, String env, String node);
+	
+	List<LogEntry> findBylogEntryDateBetweenAndQueryHashIn(Date startDate, Date endDate, List<String> queryHashes);
 
 }

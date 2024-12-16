@@ -24,6 +24,7 @@ import com.snaplogic.mongodb.eval.dtos.SummaryLogEntry;
 import com.snaplogic.mongodb.eval.repositories.LogEntryRepo;
 import com.snaplogic.mongodb.eval.utils.DateUtils;
 import com.snaplogic.mongodb.eval.utils.DistinctRepoUtil;
+import com.snaplogic.mongodb.eval.utils.StringUtils;
 import com.snaplogic.mongodb.eval.utils.DistinctRepoUtil.DistictFields;
 import com.snaplogic.mongodb.eval.utils.SummaryUtils;
 
@@ -210,38 +211,47 @@ public class QueryController {
 		String cluster = query.getCluster();
 		List<LogEntry> logEntries = new ArrayList<LogEntry>();
 		
-		//Just need start and endDates.
-		if ((collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
-			logEntries = logEntryRepo.findBylogEntryDateBetween(startDate, endDate);
+		String queryHashes = query.getQueryHashes();
 		
-		//Start, end Dates, and Collection.
-		else if ((!collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
-			logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollection(startDate, endDate, collection);
-		
-		//Start, End Dates, and env
-		else if ((collection.equalsIgnoreCase("all")) && (!env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
-			logEntries = logEntryRepo.findBylogEntryDateBetweenAndEnv(startDate, endDate, env);
-		
-		//Start, End Dates, and Cluster or Node.
-		else if ((collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (!cluster.equalsIgnoreCase("all")))
-			logEntries = logEntryRepo.findBylogEntryDateBetweenAndNode(startDate, endDate, cluster);
-		
-		//Start, end Dates, Collection and ENV.
-		else if ((!collection.equalsIgnoreCase("all")) && (!env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
-			logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndEnv(startDate, endDate, collection, env);
-		
-		//Start, end Dates, Collection and Cluster..
-		else if ((!collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (!cluster.equalsIgnoreCase("all")))
-			logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndNode(startDate, endDate, collection, cluster);
-
-		//By start, end dates, Env and cluster.
-		else if ((collection.equalsIgnoreCase("all")) && (!env.equalsIgnoreCase("all")) && (!cluster.equalsIgnoreCase("all")))
-			logEntries = logEntryRepo.findBylogEntryDateBetweenAndEnvAndNode(startDate, endDate, env, cluster);
-
-		else
-			//By all.
-			logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndEnvAndNode(startDate, endDate, collection, env, cluster);
-		
+		if ((queryHashes != null) && (queryHashes.length() > 0))
+		{
+			List<String> queryHashList = StringUtils.getHashes(queryHashes);
+			logEntries = logEntryRepo.findBylogEntryDateBetweenAndQueryHashIn(startDate, endDate, queryHashList);
+		}
+		else //No Query Hashes.
+		{
+			//Just need start and endDates.
+			if ((collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
+				logEntries = logEntryRepo.findBylogEntryDateBetween(startDate, endDate);
+			
+			//Start, end Dates, and Collection.
+			else if ((!collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollection(startDate, endDate, collection);
+			
+			//Start, End Dates, and env
+			else if ((collection.equalsIgnoreCase("all")) && (!env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndEnv(startDate, endDate, env);
+			
+			//Start, End Dates, and Cluster or Node.
+			else if ((collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (!cluster.equalsIgnoreCase("all")))
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndNode(startDate, endDate, cluster);
+			
+			//Start, end Dates, Collection and ENV.
+			else if ((!collection.equalsIgnoreCase("all")) && (!env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndEnv(startDate, endDate, collection, env);
+			
+			//Start, end Dates, Collection and Cluster..
+			else if ((!collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (!cluster.equalsIgnoreCase("all")))
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndNode(startDate, endDate, collection, cluster);
+	
+			//By start, end dates, Env and cluster.
+			else if ((collection.equalsIgnoreCase("all")) && (!env.equalsIgnoreCase("all")) && (!cluster.equalsIgnoreCase("all")))
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndEnvAndNode(startDate, endDate, env, cluster);
+	
+			else
+				//By all.
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndEnvAndNode(startDate, endDate, collection, env, cluster);
+		}
 		return (logEntries);
 	}
 }

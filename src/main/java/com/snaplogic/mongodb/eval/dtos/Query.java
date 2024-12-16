@@ -10,19 +10,24 @@ public class Query implements Serializable {
 	private String collection;
 	private String dateRange;
 	private String env;
+	private String queryHashes;
 	private String queryType;
-	
 	public String getCluster() {
 		return cluster;
 	}
+
 	public String getCollection() {
 		return collection;
 	}
+	
 	public String getDateRange() {
 		return dateRange;
 	}
 	public String getEnv() {
 		return env;
+	}
+	public String getQueryHashes() {
+		return queryHashes;
 	}
 	public String getQueryType() {
 		return queryType;
@@ -38,6 +43,9 @@ public class Query implements Serializable {
 	}
 	public void setEnv(String env) {
 		this.env = env;
+	}
+	public void setQueryHashes(String queryHashes) {
+		this.queryHashes = queryHashes;
 	}
 	public void setQueryType(String queryType) {
 		this.queryType = queryType;
@@ -64,11 +72,12 @@ public class Query implements Serializable {
 	{
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(tabs + "cluster:    " + this.getCluster() + "\n");
-		sb.append(tabs + "collection: " + this.getCollection() + "\n");
-		sb.append(tabs + "dateRange:  " + this.getDateRange() + "\n");
-		sb.append(tabs + "env:        " + this.getEnv() + "\n");
-		sb.append(tabs + "queryType:  " + this.getQueryType() + "\n");
+		sb.append(tabs + "cluster:     " + this.getCluster() + "\n");
+		sb.append(tabs + "collection:  " + this.getCollection() + "\n");
+		sb.append(tabs + "dateRange:   " + this.getDateRange() + "\n");
+		sb.append(tabs + "env:         " + this.getEnv() + "\n");
+		sb.append(tabs + "queryType:   " + this.getQueryType() + "\n");
+		sb.append(tabs + "queryHashes: " + this.getQueryHashes() + "\n");
 		
 		return (sb.toString());
 	}
