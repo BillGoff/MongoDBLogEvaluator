@@ -24,23 +24,6 @@
 	<link rel="stylesheet" th:href="@{/css/resultTable.css}"/>
 	<script src="/js/msToTime.js"></script>
 	<script src="/js/numberWithCommas.js"></script>
-	
-		
-<style type="text/css">
-table.dataTable thead tr { 
-	background-color: lightblue; 
-	color: black;
-}
-
-table.dataTable tbody tr td {
-	border: 1px solid #c0c0c0;
-}
-	
-table.dataTable tfoot tr { 
-	background-color: lightblue; 
-	color: black;
-}
-</style>
 
 	<script>
 		$(document).ready(function(){ 
@@ -74,7 +57,7 @@ table.dataTable tfoot tr {
 	</script>
 </head>
 <body>
-	<div align="center">2024 10 21 15:29:00.100 - 2024 10 22 21:00:11.061	</div>
+	<div align="center" th:text="${query.dateRange}"> </div>
 
 	<div style="padding:25px">
 		<table id="mongodbLogTable" class="table table-striped table-bordered" style="width:100%">
