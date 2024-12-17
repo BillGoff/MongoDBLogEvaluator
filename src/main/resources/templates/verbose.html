@@ -52,6 +52,10 @@
 					{	"visible": false, "targets": [10], className: 'hidden' }
 				]
 			});
+			
+			oTable.on('click', 'tbody tr', function (e) {
+			    e.currentTarget.classList.toggle('selected');
+			});
 		});
 		
 		document.addEventListener('DOMContentLoaded', function() {
