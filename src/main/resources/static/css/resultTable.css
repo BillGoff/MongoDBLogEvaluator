@@ -1,18 +1,28 @@
 /* General Styles */
+/* body { */
+/* 	background:url(/css/background2.jpg?auto=compress&cs=tinysrgb&h=750&w=1260); */
+/* 	width: 100%; */
+/* 	height: 100%; */
+/* 	text-align: center; */
+/* 	color: #fff; */
+/* } */
+
 body {
-	background:url(/css/SnapLogic2.jpg?auto=compress&cs=tinysrgb&h=750&w=1260);
-	background-image: 
-		linear-gradient(45deg, rgba(245, 70, 66, 0.75), rgba(8, 83, 156, 0.75)), 
-			url( '/css/SnapLogic2.jpg');
-	width: 100%;
-	height: 100%;
-	text-align: center;
+	background:url(/images/background2.jpg?auto=compress&cs=tinysrgb&h=750&w=1260);
+	background-size: cover;
+	height:100%;
+	background-color: #000;
 	color: #fff;
 }
-	
+
+.table-spacing {
+   border-spacing: 5px !important;
+}
+
 table.dataTable thead tr {    
-	background-color: lightblue; 
-	color: black;
+/* 	background-color: midnightblue;  */
+	background-color: #002D62;
+	color: white;
 }
 
 table.dataTable tbody tr td {
@@ -21,11 +31,38 @@ table.dataTable tbody tr td {
 }
 	
 table.dataTable tfoot tr { 
-	background-color: lightblue; 
-	color: black;
+	background-color: #002D62;
+	color: white;
 }
 		
 div.dt-button-collection {
 	background-color: black;
 }
-		
+
+table.dataTable.table.table-striped > tbody > tr:nth-of-type(2n+1) {
+/*     backdrop-filter: blur(5px); */
+	background-color: #4B9CD3;	
+}
+
+table.dataTable.table.table-striped > tbody > tr {
+/* 	backdrop-filter: blur(5px); */
+    background-color: #0039a6;
+}
+
+.dt-button {
+	font-weight: bold;
+}
+
+div.dt-search label {
+	font-weight: bold;
+}
+
+.page-link {
+	background-color: #002D62 !important;
+	color: white !important;
+	font-weight: bold;
+}
+
+:root {
+  --dt-row-selected: 255, 0, 0;
+}
