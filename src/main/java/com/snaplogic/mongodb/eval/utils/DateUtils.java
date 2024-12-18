@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class DateUtils {
 
 	//11/25/2024 - 12/02/2024
-	private static final String dateFormatPattern = "MM/dd/yyyy";
+	private static final String dateFormatPattern = "MM/dd/yyyy HH:mm:ss";
 	
 	public enum DATE_FIELD {
 		START (0),
@@ -91,22 +91,41 @@ public class DateUtils {
 		}
 		return message.toString();
 	}
-	
+	/**
+	 * Convenience method used by the gui.
+	 * @param date Date that we are attempting to get two weeks before.
+	 * @return Date that is two weeks before the date supplied.
+	 */
 	public static Date getDateBeforeTwoWeeks(Date date) {
-	    Calendar calendar = Calendar.getInstance();
-	    calendar.setTime(date);
-	    calendar.add(Calendar.DATE, -14); //2 weeks
-	    return calendar.getTime();
+	    return getNDaysBeforeDate(date, 14);
 	}
 
-	public static String getLastTwoWeeksForGui ()
+	/**
+	 * This method can be used to get the GUI string for a two week period.
+	 * @return
+	 */
+	public static String getGuiDateForNDaysFromNow (Integer days)
 	{
 		Date rightNow = Calendar.getInstance().getTime();
-		Date startDate = getDateBeforeTwoWeeks(rightNow);
+		Date startDate = getNDaysBeforeDate(rightNow, days);
 		
 		StringBuilder sb = new StringBuilder(toString(startDate) + " - " + toString(rightNow));
 		
 		return sb.toString();
+	}
+	
+	/**
+	 * This method is used to get the date that is N days from date supplied.
+	 * @param date Date to get new date from.
+	 * @param days Integer for the number of days we want the date to be before the date supplied.
+	 * @return Date the date that is N days before the date supplied.
+	 */
+	public static Date getNDaysBeforeDate(Date date, Integer days)
+	{
+		 Calendar calendar = Calendar.getInstance();
+		    calendar.setTime(date);
+		    calendar.add(Calendar.DATE, -days); //2 weeks
+		    return calendar.getTime();
 	}
 	
 	/**

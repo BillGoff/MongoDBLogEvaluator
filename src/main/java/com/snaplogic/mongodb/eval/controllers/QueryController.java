@@ -63,7 +63,9 @@ public class QueryController {
 			DistinctRepoUtil distictUtils = new DistinctRepoUtil();
 			
 			Query defaultQuery = new Query();
-			defaultQuery.setDateRange(DateUtils.getLastTwoWeeksForGui());
+			defaultQuery.setDateRange(DateUtils.getGuiDateForNDaysFromNow(3));
+			
+			System.out.println("Date Range: " + defaultQuery.getDateRange());
 			
 		    model.addAttribute("query", defaultQuery);
 		    			
