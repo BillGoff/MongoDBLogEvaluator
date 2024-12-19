@@ -1,0 +1,62 @@
+<div th:fragment="queryFormFrag">
+	<div class="content">
+	 	<div id="query-form" class="queryForm">
+	 		<h2> Query Form</h2>
+	 		<form action="#" th:object="${query}" th:action="@{query}" method="post">
+				<fieldset>
+					<div class="flexi">
+						<div style="padding-right: 5px;">
+							<label class="dateLabel" for="from">From Date</label>
+							<input type="text" id="from" name="from" th:field="*{startDateString}" size="10">
+						</div>
+						<div>
+							<label class="dateLabel" for="startTime">Time</label>
+							<input type="text" class="timepicker" name="fromTime" id="fromTime" th:field="*{startTime}" size="10">
+						</div>
+					</div>
+					<div class="flexi">
+						<div style="padding-right: 5px;">	
+							<label class="dateLabel" for="to">To Date</label>
+							<input type="text" id="to" name="to" th:field="*{endDateString}" size="10">
+						</div>
+						<div>
+							<label class="dateLabel" for="endTime">Time</label>
+							<input type="text" class="timepicker" name="toTime" id="toTime" th:field="*{endTime}" size="10">
+						</div>
+					</div>
+					<div>
+						<label for="availableQueryTypes">Available Query Types: </label>
+						<select id="queryType" name="queryType" th:field="*{queryType}">
+							<option th:each="queryType : ${availableQueryTypes}" th:value="${queryType}" th:text="${queryType}"></option>
+						</select>
+					</div>
+					<div>
+						<label for="availableCollections">Available Collections: </label>
+						<select id="collection" name="collection" th:field="*{collection}">
+							<option th:each="collection : ${availableCollections}" th:value="${collection}" th:text="${collection}"></option>
+						</select>
+					</div>
+					<div>
+						<label for="availableEnvs">Available Environments: </label>
+						<select id="env" name="env" th:field="*{env}">
+							<option th:each="env : ${availableEnvs}" th:value="${env}" th:text="${env}"></option>
+						</select>
+	 				</div>
+	 				<div>
+						<label for="availableNodes">Available Clusters: </label>
+						<select id="node" name="node" th:field="*{cluster}">
+							<option th:each="node : ${availableNodes}" th:value="${node}" th:text="${node}"></option>
+						</select>
+					</div>
+					<div>
+						<label for="name">Query Hashes:</label>
+	 					<input type="text" name="queryHashes" id="queryHashes" th:field="*{queryHashes}" class="text ui-widget-content ui-corner-all">
+					</div>
+					<div>		
+						<input class="ui-button ui-widget ui-corner-all" type="submit" value="Submit"/>
+					</div>	
+	 			</fieldset>
+	 		</form>
+		</div>
+	</div>
+</div>

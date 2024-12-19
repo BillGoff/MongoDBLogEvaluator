@@ -63,9 +63,14 @@ public class QueryController {
 			DistinctRepoUtil distictUtils = new DistinctRepoUtil();
 			
 			Query defaultQuery = new Query();
-			defaultQuery.setDateRange(DateUtils.getGuiDateForNDaysFromNow(3));
 			
-			System.out.println("Date Range: " + defaultQuery.getDateRange());
+			defaultQuery.setStartDateString(DateUtils.toString(DateUtils.rightNowDate(), DateUtils.defaultDateFormat));
+			
+			defaultQuery.setStartTime("00:00:00");			
+			
+			defaultQuery.setEndDateString(DateUtils.toString(DateUtils.getNDaysBeforeDate(DateUtils.rightNowDate(), 3), 
+					DateUtils.defaultDateFormat));
+			defaultQuery.setEndTime("23:30:00");			
 			
 		    model.addAttribute("query", defaultQuery);
 		    			
@@ -75,6 +80,8 @@ public class QueryController {
 					DistictFields.COLLECTION));
 			model.addAttribute("availableEnvs", distictUtils.getDistinctValues(mongoTemplate, DistictFields.ENV));
 			model.addAttribute("availableNodes", distictUtils.getDistinctValues(mongoTemplate, DistictFields.NODE));
+
+			System.out.println("Default Query: \n" + defaultQuery.toString("	"));			
 		}
 		catch(Exception e)
 		{
@@ -205,8 +212,11 @@ public class QueryController {
 	 */
 	private List<LogEntry> getLogEntries(Query query) throws ParseException
 	{
-		Date startDate = DateUtils.getStartDateFromGuiString(query.getDateRange());
-		Date endDate = DateUtils.getEndDateFromGuiString(query.getDateRange());
+		String startDateString = query.getStartDateString() + " " + query.getStartTime();
+		Date startDate = DateUtils.toDate(startDateString);
+		
+		String endDateString = query.getEndDateString() + " " + query.getEndTime();
+		Date endDate = DateUtils.toDate(endDateString);
 		
 		String collection = query.getCollection();
 		String env = query.getEnv();

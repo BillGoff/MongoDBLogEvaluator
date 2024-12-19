@@ -41,20 +41,29 @@ div.dt-button-collection {
 
 table.dataTable.table.table-striped > tbody > tr:nth-of-type(2n+1) {
 /*     backdrop-filter: blur(5px); */
-	background-color: #4B9CD3;	
+	background-color: #4B9CD3 !important;
 }
 
 table.dataTable.table.table-striped > tbody > tr {
 /* 	backdrop-filter: blur(5px); */
-    background-color: #0039a6;
+    background-color: #0039a6 !important;
 }
 
 .dt-button {
-	font-weight: bold;
+	font-weight: bold !important;
 }
 
 div.dt-search label {
-	font-weight: bold;
+	font-weight: bold !important;
+	color: white !important;
+}
+
+#mongodbLogTable thead th {
+	border: 1px solid white !important;
+}
+
+div.dt-buttons > .dt-button, div.dt-buttons > div.dt-button-split .dt-button {
+	color: white !important;
 }
 
 .page-link {
@@ -64,5 +73,26 @@ div.dt-search label {
 }
 
 :root {
-  --dt-row-selected: 255, 0, 0;
+	--dt-row-selected: 255, 0, 0 !important;
+}
+
+div.dt-container div.dt-info {
+    color: white !important;
+}
+
+.queryForm h2, .queryForm label {	
+	color: #C0C0C0 !important;
+	font-weight:bold;
+}
+		
+.queryForm fieldset {
+	display: block;
+	min-inline-size: min-content;
+	margin-inline: 2px;
+	border-width: 2px;
+	border-style: groove;
+	border-color: threedface;
+	border-image: initial;
+	padding-block: 0.35em 0.625em;
+	padding-inline: 0.75em;
 }

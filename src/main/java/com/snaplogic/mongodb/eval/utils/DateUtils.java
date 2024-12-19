@@ -20,6 +20,8 @@ public class DateUtils {
 	//11/25/2024 - 12/02/2024
 	private static final String dateFormatPattern = "MM/dd/yyyy HH:mm:ss";
 	
+	public static final String defaultDateFormat = "MM/dd/yyyy";
+	
 	public enum DATE_FIELD {
 		START (0),
 		END (1);
@@ -193,6 +195,21 @@ public class DateUtils {
 		Objects.requireNonNull(myDate, "Cannot convert a null java.util.Date to a String!");
 		
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormatPattern);
+		
+		return (simpleDateFormat.format(myDate));
+	}
+	
+	/**
+	 * (U) This method converts a date into a nice readable String.
+	 *
+	 * @param myDate java.util.Date to produce a readable string from.
+	 * @return String the readable format of the date.
+	 */
+	public static String toString(Date myDate, String format)
+	{
+		Objects.requireNonNull(myDate, "Cannot convert a null java.util.Date to a String!");
+		
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
 		
 		return (simpleDateFormat.format(myDate));
 	}

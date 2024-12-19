@@ -4,57 +4,75 @@
 	<title>MongoDB Web Query</title> 
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+	<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+
+	<script src="/js/jquery.timepicker.min.js"></script>
+	<link rel="stylesheet" th:href="@{/css/jquery.timepicker.min.css}"/>
+
+	<script src="/js/jquery.date.time.picker.js"></script>
+
 	<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css" />
 	
     <link rel="stylesheet" th:href="@{/css/evaluatorMain.css}"/>
     <link rel="stylesheet" th:href="@{/css/queryForm.css}"/>
-
-	<script>
-		$(function() {
-			$('input[name="dateRange"]').daterangepicker({
-				opens: 'left',
-				timePicker: true,
-			    "timePicker24Hour": true,
-				locale: { format: 'MM/DD/YYYY HH:mm:ss' }
-			});
-		});
-	</script>
+    
 </head>
 <body>
-	<div id="contact-form">
+	<div id="query-form">
 		<h2> Query Form</h2>
 		<form action="#" th:object="${query}" th:action="@{query}" method="post">
 			<fieldset>
-				<label for="dateRange">
-					<span class="required">Date Range: *</span> 
-					<input type="text" th:field="*{dateRange}" name="dateRange" /> <br>
-				</label>
-				<label for="availableCollections">Available Query Types: </label>
-				<select id="queryType" name="queryType" th:field="*{queryType}">
-					<option th:each="queryType : ${availableQueryTypes}" th:value="${queryType}" th:text="${queryType}"></option>
-				</select> <br>
-			
-				<label for="availableCollections">Available Collections: </label>
-				<select id="collection" name="collection" th:field="*{collection}">
-					<option th:each="collection : ${availableCollections}" th:value="${collection}" th:text="${collection}"></option>
-				</select> <br>
-			
-				<label for="availableEnvs">Available Environments: </label>
-				<select id="env" name="env" th:field="*{env}">
-					<option th:each="env : ${availableEnvs}" th:value="${env}" th:text="${env}"></option>
-				</select> <br>
- 
-				<label for="availableNodes">Available Clusters: </label>
-				<select id="node" name="node" th:field="*{cluster}">
-					<option th:each="node : ${availableNodes}" th:value="${node}" th:text="${node}"></option>
-				</select> <br>
+				<div class="flexi">
+					<div style="padding-right: 5px;">
+						<label class="dateLabel" for="from">From Date</label>
+						<input type="text" id="from" name="from" th:field="*{startDateString}" size="10">
+					</div>
+					<div>
+						<label class="dateLabel" for="startTime">Time</label>
+						<input type="text" class="timepicker" name="fromTime" id="fromTime" th:field="*{startTime}" size="10">
+					</div>
+				</div>
+				<div class="flexi">
+					<div style="padding-right: 5px;">	
+						<label class="dateLabel" for="to">To Date</label>
+						<input type="text" id="to" name="to" th:field="*{endDateString}" size="10">
+					</div>
+					<div>
+						<label class="dateLabel" for="endTime">Time</label>
+						<input type="text" class="timepicker" name="toTime" id="toTime" th:field="*{endTime}" size="10">
+					</div>
+				</div>
 				
-				<input class="ui-button ui-widget ui-corner-all" type="submit" value="Submit"/>
-				
+				<div>
+					<label for="availableQueryTypes">Available Query Types: </label>
+					<select id="queryType" name="queryType" th:field="*{queryType}">
+						<option th:each="queryType : ${availableQueryTypes}" th:value="${queryType}" th:text="${queryType}"></option>
+					</select>
+				</div>
+				<div>
+					<label for="availableCollections">Available Collections: </label>
+					<select id="collection" name="collection" th:field="*{collection}">
+						<option th:each="collection : ${availableCollections}" th:value="${collection}" th:text="${collection}"></option>
+					</select>
+				</div>
+				<div>
+					<label for="availableEnvs">Available Environments: </label>
+					<select id="env" name="env" th:field="*{env}">
+						<option th:each="env : ${availableEnvs}" th:value="${env}" th:text="${env}"></option>
+					</select>
+ 				</div>
+ 				<div>
+					<label for="availableNodes">Available Clusters: </label>
+					<select id="node" name="node" th:field="*{cluster}">
+						<option th:each="node : ${availableNodes}" th:value="${node}" th:text="${node}"></option>
+					</select>
+				</div>
+				<div>
+					<input class="ui-button ui-widget ui-corner-all" type="submit" value="Submit"/>
+				</div>				
  			</fieldset>
  		</form>
 	</div>
