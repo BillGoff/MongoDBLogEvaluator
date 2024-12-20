@@ -42,7 +42,7 @@ h4{
 	border-radius:7px;
 	-webkit-border-radius:7px;
 	-moz-border-radius:7px;
-	z-index: 1;
+	z-index: 100;
 }
 
 #query-form input,   
