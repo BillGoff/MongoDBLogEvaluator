@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.snaplogic.mongodb.eval.dtos.LogEntry;
 import com.snaplogic.mongodb.eval.dtos.Query;
+import com.snaplogic.mongodb.eval.dtos.Stat;
 import com.snaplogic.mongodb.eval.dtos.SummaryLogEntry;
 import com.snaplogic.mongodb.eval.repositories.LogEntryRepo;
+import com.snaplogic.mongodb.eval.repositories.StatsRepo;
+import com.snaplogic.mongodb.eval.repositories.SummaryRepo;
 import com.snaplogic.mongodb.eval.utils.DateUtils;
 import com.snaplogic.mongodb.eval.utils.DistinctRepoUtil;
 import com.snaplogic.mongodb.eval.utils.StringUtils;
@@ -59,17 +62,19 @@ public class QueryController {
 			List<String> queryTypes = new ArrayList<String>();
 			queryTypes.add("summary");
 			queryTypes.add("verbose");
+			queryTypes.add("stats");
 			
 			DistinctRepoUtil distictUtils = new DistinctRepoUtil();
 			
 			Query defaultQuery = new Query();
 			
-			defaultQuery.setStartDateString(DateUtils.toString(DateUtils.rightNowDate(), DateUtils.defaultDateFormat));
+			defaultQuery.setStartDateString(DateUtils.toString(DateUtils.getNDaysBeforeDate(DateUtils.rightNowDate(), 3), 
+					DateUtils.defaultDateFormat));
 			
 			defaultQuery.setStartTime("00:00:00");			
 			
-			defaultQuery.setEndDateString(DateUtils.toString(DateUtils.getNDaysBeforeDate(DateUtils.rightNowDate(), 3), 
-					DateUtils.defaultDateFormat));
+			defaultQuery.setEndDateString(DateUtils.toString(DateUtils.rightNowDate(), DateUtils.defaultDateFormat));
+
 			defaultQuery.setEndTime("23:30:00");			
 			
 		    model.addAttribute("query", defaultQuery);
@@ -110,7 +115,10 @@ public class QueryController {
 	 */
 	@PostMapping("/query")
 	public String query(@ModelAttribute Query query, Model model)
-	{		
+	{
+		Date startDate = DateUtils.rightNowDate();
+		boolean failed = false;
+
 		System.out.println(query.toString());
 				
 		List<String> queryTypes = new ArrayList<String>();
@@ -130,32 +138,77 @@ public class QueryController {
 
 		try
 		{
-			List<LogEntry> logEntries = getLogEntries(query);
-
-			if(query.getQueryType().equalsIgnoreCase("summary"))
+			if(query.getQueryType().equalsIgnoreCase("stats"))
 			{
-				try
-				{
-					List<SummaryLogEntry> summaryLogEntries = SummaryUtils.parseQueryResults(logEntries);
-			
-					model.addAttribute("summaryLogEntries", summaryLogEntries);
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}
-				return "summary";
+				StatsRepo statsRepo = new StatsRepo ();
+				List<Stat> stats = statsRepo.getStats(query, mongoTemplate);
+				
+				System.out.println("returning " + stats.size() + " cluster stats");
+				
+				model.addAttribute("clusterStats", stats);
+				
+				return "stats";
 			}
 			else
-			{
-				try
-				{	
-					model.addAttribute("logEntries", logEntries);		
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			{	
+				if(query.getQueryType().equalsIgnoreCase("summary"))
+				{
+					SummaryRepo summaryRepo = new SummaryRepo();
+					List<SummaryLogEntry> summaryLogEntries = summaryRepo.getSummary(query, mongoTemplate);
+					try
+					{				
+						model.addAttribute("summaryLogEntries", summaryLogEntries);
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+						failed = true;
+					}
+					finally
+					{
+						StringBuilder msg = new StringBuilder("It took " + DateUtils.computeDiff(startDate,
+								DateUtils.rightNowDate()));
+						if (failed)
+							msg.append(" to fail to ");
+						else
+							msg.append(" to successfully (returning " + summaryLogEntries.size() + ") ");
+					
+							
+						msg.append("run a summary query.");
+						
+						logger.info(msg.toString());
+					}	
+					return "summary";
 				}
-				return "verbose";
+				else
+				{
+					List<LogEntry> logEntries = getLogEntries(query);
+
+					try
+					{							
+						logger.info("found " + logEntries.size() + " log entries!");
+						
+						model.addAttribute("logEntries", logEntries);		
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					finally
+					{
+						StringBuilder msg = new StringBuilder("It took " + DateUtils.computeDiff(startDate,
+								DateUtils.rightNowDate()));
+						if (failed)
+							msg.append(" to fail to ");
+						else
+							msg.append(" to successfully (returning " + logEntries.size() + ") ");
+					
+							
+						msg.append("run a verbose query.");
+						
+						logger.info(msg.toString());
+					}	
+					return "verbose";
+				}
 			}
 		}
 		catch(Exception e)
@@ -228,7 +281,43 @@ public class QueryController {
 		if ((queryHashes != null) && (queryHashes.length() > 0))
 		{
 			List<String> queryHashList = StringUtils.getHashes(queryHashes);
-			logEntries = logEntryRepo.findBylogEntryDateBetweenAndQueryHashIn(startDate, endDate, queryHashList);
+			if ((collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndQueryHashIn(startDate, endDate, queryHashList);
+
+			//Start, end Dates, queryHashList and Collection.
+			else if ((!collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
+			{
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndQueryHashIn(startDate, endDate, collection, queryHashList);
+			}
+			//Start, End Dates, queryHashList and env
+			else if ((collection.equalsIgnoreCase("all")) && (!env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
+			{
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndEnvAndQueryHashIn(startDate, endDate, env, queryHashList);
+			}
+			//Start, End Dates, queryHashList and Cluster or Node.
+			else if ((collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (!cluster.equalsIgnoreCase("all")))
+			{
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndNodeAndQueryHashIn(startDate, endDate, cluster, queryHashList);
+			}
+			//Start, end Dates, queryHashList, Collection and ENV.
+			else if ((!collection.equalsIgnoreCase("all")) && (!env.equalsIgnoreCase("all")) && (cluster.equalsIgnoreCase("all")))
+			{
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndEnvAndQueryHashIn(startDate, endDate, collection, env, queryHashList);
+			}
+			//Start, end Dates, queryHashList, Collection and Cluster..
+			else if ((!collection.equalsIgnoreCase("all")) && (env.equalsIgnoreCase("all")) && (!cluster.equalsIgnoreCase("all")))
+			{
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndNodeAndQueryHashIn(startDate, endDate, collection, cluster, queryHashList);
+			}
+			//By start, end dates, queryHashList, Env and cluster.
+			else if ((collection.equalsIgnoreCase("all")) && (!env.equalsIgnoreCase("all")) && (!cluster.equalsIgnoreCase("all")))
+			{
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndNodeAndEnvAndQueryHashIn(startDate, endDate, cluster, env, queryHashList);
+			}
+			else
+			{
+				logEntries = logEntryRepo.findBylogEntryDateBetweenAndCollectionAndNodeAndEnvAndQueryHashIn(startDate, endDate, collection, cluster, env, queryHashList);
+			}
 		}
 		else //No Query Hashes.
 		{

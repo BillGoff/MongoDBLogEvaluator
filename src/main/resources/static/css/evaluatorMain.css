@@ -16,3 +16,13 @@ html {
 	font-smoothing:antialiased;
 	text-rendering:optimizeLegibility;
 }
+
+.box {
+	width: 400px;
+	height: 100px;
+	cursor: pointer;
+}
+
+.box:hover {
+	opacity: 0.7;
+}

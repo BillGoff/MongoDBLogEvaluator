@@ -62,6 +62,10 @@ div.dt-search label {
 	border: 1px solid white !important;
 }
 
+#mongodbLogTable tfoot th {
+	border: 1px solid white !important;
+}
+
 div.dt-buttons > .dt-button, div.dt-buttons > div.dt-button-split .dt-button {
 	color: white !important;
 }

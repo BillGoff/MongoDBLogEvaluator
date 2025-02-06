@@ -1,0 +1,27 @@
+db.logEntry.createIndex(
+{	"collection": 1
+},{	name: "collection",
+	background: true 
+})
+
+db.logEntry.createIndex(
+{	"env": 1
+},{	name: "env",
+	background: true
+})
+
+db.logEntry.createIndex(
+{	"node": 1
+},{	name: "node",
+	background: true
+})
+
+db.logEntry.createIndex(
+{	"logEntryDate": 1,
+	"node": 1,
+	"env": 1,
+	"collection": 1,
+	"queryHash": 1
+},{	name: "queryIndex", 
+	background: true
+})
