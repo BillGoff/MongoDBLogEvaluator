@@ -26,19 +26,22 @@ public class StringUtils {
 	 * @param queryHashes String which contains the comma separated query hashes we want the list for.
 	 * @return List of query hashes.
 	 */
-	public static List<String> getHashes(String queryHasheString)
+	public static List<String> getHashes(String queryHashString)
 	{
-		HashSet<String> queryHashSet = new HashSet<String>();
+		List<String> queryHashList = new ArrayList<String>();
 		
-		String[] elements = queryHasheString.split(",");
+		if ((queryHashString != null) && (queryHashString.trim().length() > 0))
+		{
+			HashSet<String> queryHashSet = new HashSet<String>();
+
+			String[] elements = queryHashString.split(",");
         
-		for(String element: elements)
-			queryHashSet.add(element.trim());
+			for(String element: elements)
+				queryHashSet.add(element.trim());	
+			queryHashList = new ArrayList<String> (queryHashSet);
 		
-		List<String> queryHashList = new ArrayList<String> (queryHashSet);
-		
-		Collections.sort(queryHashList);
-		
+			Collections.sort(queryHashList);
+		}
 		return queryHashList;
 	}
 }

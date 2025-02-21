@@ -19,7 +19,8 @@ class DateUtilsTest {
 	 * Method used to test the DateUtils method to get the expected start date.
 	 */
 	@Test
-	void testGetDateBeforeNnumberOfDays() {
+	void testGetDateBeforeNnumberOfDays() 
+	{
 		try
 		{
 			String guiDateString = "12/10/2024 00:00:00";

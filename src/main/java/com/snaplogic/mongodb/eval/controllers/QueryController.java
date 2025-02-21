@@ -22,6 +22,7 @@ import com.snaplogic.mongodb.eval.dtos.LogEntry;
 import com.snaplogic.mongodb.eval.dtos.Query;
 import com.snaplogic.mongodb.eval.dtos.Stat;
 import com.snaplogic.mongodb.eval.dtos.SummaryLogEntry;
+import com.snaplogic.mongodb.eval.repositories.FrequencyRepo;
 import com.snaplogic.mongodb.eval.repositories.LogEntryRepo;
 import com.snaplogic.mongodb.eval.repositories.StatsRepo;
 import com.snaplogic.mongodb.eval.repositories.SummaryRepo;
@@ -60,6 +61,7 @@ public class QueryController {
 		try
 		{
 			List<String> queryTypes = new ArrayList<String>();
+			queryTypes.add("frequency");
 			queryTypes.add("summary");
 			queryTypes.add("verbose");
 			queryTypes.add("stats");
@@ -155,6 +157,35 @@ public class QueryController {
 				{
 					SummaryRepo summaryRepo = new SummaryRepo();
 					List<SummaryLogEntry> summaryLogEntries = summaryRepo.getSummary(query, mongoTemplate);
+					try
+					{				
+						model.addAttribute("summaryLogEntries", summaryLogEntries);
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+						failed = true;
+					}
+					finally
+					{
+						StringBuilder msg = new StringBuilder("It took " + DateUtils.computeDiff(startDate,
+								DateUtils.rightNowDate()));
+						if (failed)
+							msg.append(" to fail to ");
+						else
+							msg.append(" to successfully (returning " + summaryLogEntries.size() + ") ");
+					
+							
+						msg.append("run a summary query.");
+						
+						logger.info(msg.toString());
+					}	
+					return "summary";
+				}
+				else if(query.getQueryType().equalsIgnoreCase("frequency"))
+				{
+					FrequencyRepo repo = new FrequencyRepo();
+					List<SummaryLogEntry> summaryLogEntries = repo.getFrequency(query, mongoTemplate);
 					try
 					{				
 						model.addAttribute("summaryLogEntries", summaryLogEntries);

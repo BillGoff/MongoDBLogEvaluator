@@ -15,19 +15,30 @@ import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 
+import com.snaplogic.mongodb.eval.dtos.FrequencyResult;
 import com.snaplogic.mongodb.eval.dtos.Query;
 import com.snaplogic.mongodb.eval.dtos.SummaryLogEntry;
 import com.snaplogic.mongodb.eval.utils.DateUtils;
 import com.snaplogic.mongodb.eval.utils.StringUtils;
 
 
-
-public class SummaryRepo extends QueryRepo{	
+/**
+ * This Repository is designed to run the query hash frequency query.
+ * 
+ * db.logEntry.aggregate([
+ * {	$match: { "logEntryDate": { $gte: ISODate("2025-02-10"), $lte: ISODate("2025-02-14") } }
+ * },{	$group: { _id: "$queryHash", count: { $sum: 1}}
+ * },{	$sort: { count: -1 } }])
+ * 
+ * @author bgoff
+ * @since 20 Feb 2025
+ */
+public class FrequencyRepo extends QueryRepo {	
 		
-	private static final Logger logger = LogManager.getLogger(StatsRepo.class);
+	private static final Logger logger = LogManager.getLogger(FrequencyRepo.class);
 
 
-	public List<SummaryLogEntry> getSummary(Query query, MongoTemplate mongoTemplate) throws Exception
+	public List<SummaryLogEntry> getFrequency(Query query, MongoTemplate mongoTemplate) throws Exception
 	{
 		Date envStartDate = DateUtils.rightNowDate();
 		
@@ -44,7 +55,7 @@ public class SummaryRepo extends QueryRepo{
 				first("planSummary").as("planSummary").
 				first("queryHash").as("queryHash");
 		
-		SortOperation sort = Aggregation.sort(Sort.Direction.DESC, "highDuration");
+		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "sum");
 		
 		Aggregation agg = Aggregation.newAggregation(matchStage, group, sort);
 
