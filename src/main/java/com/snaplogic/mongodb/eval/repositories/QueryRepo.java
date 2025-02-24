@@ -72,6 +72,8 @@ public class QueryRepo {
 	 */
 	protected MatchOperation buildMatchStage(Query query) throws QueryException
 	{
+		List<Criteria> queryCriteria = new ArrayList<Criteria>();
+		
 		MatchOperation matchStage = null;
 		Date startDate = DateUtils.rightNowDate();
 		boolean errored = false;
@@ -80,20 +82,21 @@ public class QueryRepo {
 			Criteria matchCriteria = buildDateRange(query);
 		
 			if(!query.getEnv().equalsIgnoreCase("all"))
-				matchCriteria.andOperator(buildCriteria("env", query.getEnv()));
+				queryCriteria.add(buildCriteria("env", query.getEnv()));
 			
 			if(!query.getCollection().equalsIgnoreCase("all"))
-				matchCriteria.andOperator(buildCriteria("collection", query.getCollection()));
+				queryCriteria.add(buildCriteria("collection", query.getCollection()));
 		
 			if(!query.getCluster().equalsIgnoreCase("all"))
-				matchCriteria.andOperator(buildCriteria("node", query.getCluster()));
+				queryCriteria.add(buildCriteria("node", query.getCluster()));
 
 			if ((query.getQueryHashes() != null) && (query.getQueryHashes().trim().length() > 0))
 			{
 				List<String> queryHashList = StringUtils.getHashes(query.getQueryHashes());
-				matchCriteria.andOperator(buildQueryHashCriteria(queryHashList));
+				queryCriteria.add(buildQueryHashCriteria(queryHashList));
 			}
-				
+			matchCriteria.andOperator(queryCriteria);
+			
 			matchStage = Aggregation.match(matchCriteria);
 		}
 		catch(ParseException pe)

@@ -55,9 +55,11 @@ public class FrequencyRepo extends QueryRepo {
 				first("planSummary").as("planSummary").
 				first("queryHash").as("queryHash");
 		
-		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "sum");
+		SortOperation sort = Aggregation.sort(Sort.Direction.DESC, "sum");
 		
-		Aggregation agg = Aggregation.newAggregation(matchStage, group, sort);
+		Aggregation.limit(100);
+		
+		Aggregation agg = Aggregation.newAggregation(matchStage, group, sort, Aggregation.limit(100));
 
 		logger.debug("agg: " + agg.toString());
 		

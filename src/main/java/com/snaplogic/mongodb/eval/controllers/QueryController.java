@@ -124,8 +124,10 @@ public class QueryController {
 		System.out.println(query.toString());
 				
 		List<String> queryTypes = new ArrayList<String>();
+		queryTypes.add("frequency");
 		queryTypes.add("summary");
 		queryTypes.add("verbose");
+		queryTypes.add("stats");
 		
 		DistinctRepoUtil distictUtils = new DistinctRepoUtil();
 	    			
