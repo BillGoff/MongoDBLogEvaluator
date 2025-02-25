@@ -37,7 +37,6 @@ public class FrequencyRepo extends QueryRepo {
 		
 	private static final Logger logger = LogManager.getLogger(FrequencyRepo.class);
 
-
 	public List<SummaryLogEntry> getFrequency(Query query, MongoTemplate mongoTemplate) throws Exception
 	{
 		Date envStartDate = DateUtils.rightNowDate();

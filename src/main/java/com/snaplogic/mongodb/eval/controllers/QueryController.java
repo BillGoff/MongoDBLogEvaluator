@@ -42,11 +42,21 @@ public class QueryController {
 
 	private static final Logger logger = LogManager.getLogger(QueryController.class);
 
-	@Autowired
-	LogEntryRepo logEntryRepo;
+	private LogEntryRepo logEntryRepo;
+	
+	private MongoTemplate mongoTemplate;
 	
 	@Autowired
-	MongoTemplate mongoTemplate;
+	public void setMongoTemplate(MongoTemplate mongoTemplate)
+	{
+		this.mongoTemplate = mongoTemplate;
+	}
+	
+	@Autowired
+	public void setLogEntryRepo(LogEntryRepo logEntryRepo)
+	{
+		this.logEntryRepo = logEntryRepo;
+	}
 	
 	/**
 	 * Default query page.  This end point loads all the data for the default query page. 
