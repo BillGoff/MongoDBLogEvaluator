@@ -16,13 +16,8 @@ public class Stat implements Serializable {
 	private int count;
 	private Date logEntryDate;
 	private long millieseconds;
+
 	
-	public long getMillieseconds() {
-		return millieseconds;
-	}
-	public void setMillieseconds(long millieseconds) {
-		this.millieseconds = millieseconds;
-	}
 	public String getCluster() {
 		return cluster;
 	}
@@ -32,6 +27,9 @@ public class Stat implements Serializable {
 	public Date getLogEntryDate() {
 		return logEntryDate;
 	}
+	public long getMillieseconds() {
+		return millieseconds;
+	}
 	public void setCluster(String cluster) {
 		this.cluster = cluster;
 	}
@@ -40,7 +38,9 @@ public class Stat implements Serializable {
 	}
 	public void setLogEntryDate(Date logEntryDate) {
 		this.logEntryDate = logEntryDate;
-		this.setMillieseconds(logEntryDate.getTime());
+	}
+	public void setMillieseconds(long millieseconds) {
+		this.millieseconds = millieseconds;
 	}
 	
 	/**

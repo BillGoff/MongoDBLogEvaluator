@@ -44,19 +44,11 @@
 	
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
 	
-	
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("form").on("submit", function(event) {
 				$.LoadingOverlay("show");
 			});
-			
-			$("#diffAdditionalDates").find("*").prop("disabled", true);
-			$("#diffAdditionalDates a").click(function(e) {
-				e.preventDefault();
-			});
-			
-			$("#diffAdditionalDates").addClass("disabled-div");
 			
 			$('#queryType').on('change', function() { 
 				if(this.value == "diff") {
@@ -73,6 +65,7 @@
 					$("#diffAdditionalDates").addClass("disabled-div");
 				}
  			});
+			
 		});
 	</script>
 		
@@ -123,17 +116,16 @@
 				},
 				columns: [
 					{	data: "queryHash" },
-					{	data: "count" },
-					{	data: "averageDuration"	},
-					{ 	data: "highDuration" },
-					{	data: "lowDuration"	},
+					{	data: "orgCount" },
+					{	date: "newCount" },
+					{	data: "orgAverageDuration" },
+					{	data: "newAverageDuration" },
+					{ 	data: "orgHighDuration" },
+					{	data: "newHighDuration" },
+					{   data: "improvement" },
 					{	data: "query" },
-					{	data: "planSummary" }
-				],
-				columnDefs: [
-					{ 
-						"visible": false, "targets": [6], className: 'hidden' 
-					}
+					{	data: "orgPlanSummary" },
+					{	data: "newPlanSummary" }
 				]
 			});
 			
@@ -159,34 +151,46 @@
 				<thead>
 					<tr>
 						<th>QueryHash</th>
-						<th>Count</th>
-						<th>Average Duration</th>
-						<th>High Duration</th>
-						<th>Low Duration</th>
+						<th>Org Count</th>
+						<th>New Count</th>
+						<th>Org Average Duration</th>
+						<th>New Average Duration</th>
+						<th>Org High Duration</th>
+						<th>New High Duration</th>
+						<th>Improvement %</th>
 						<th>Query</th>
-						<th>Plan Summary</th>
+						<th>Org Plan Summary</th>
+						<th>New Plan Summary</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="summarylogEntry : ${summaryLogEntries}" th:id="${summarylogEntry.queryHash}">
-						<td><span th:text="${summarylogEntry.queryHash}">QueryHash</span></td>
-						<td class="numberWithCommas"><span th:text="${summarylogEntry.sum}">Count</span></td>
-						<td class="msToTimeElement"><span th:text="${summarylogEntry.averageDuration}">Average Duration</span></td>
-						<td class="msToTimeElement"><span th:text="${summarylogEntry.highDuration}">High Duration</span></td>
-						<td class="msToTimeElement"><span th:text="${summarylogEntry.lowDuration}">Low Duration</span></td>
-						<td><span th:text="${summarylogEntry.cmd}">Query</span></td>
-						<td><span th:text="${summarylogEntry.planSummary}">Plan Summary</span></td>
+					<tr th:each="diffLogEntry : ${diffLogEntries}" th:id="${diffLogEntry.queryHash}">
+						<td><span th:text="${diffLogEntry.queryHash}">QueryHash</span></td>
+						<td class="numberWithCommas"><span th:text="${diffLogEntry.orgSum}">Org Count</span></td>
+						<td class="numberWithCommas"><span th:text="${diffLogEntry.newSum}">New Count</span></td>
+						<td class="msToTimeElement"><span th:text="${diffLogEntry.orgAverageDuration}">Org Average Duration</span></td>
+						<td class="msToTimeElement"><span th:text="${diffLogEntry.newAverageDuration}">new Average Duration</span></td>
+						<td class="msToTimeElement"><span th:text="${diffLogEntry.orgHighDuration}">Org High Duration</span></td>
+						<td class="msToTimeElement"><span th:text="${diffLogEntry.newHighDuration}">New High Duration</span></td>
+						<td><span th:text="${diffLogEntry.improvment}">% Improvement</span></td>						
+						<td><span th:text="${diffLogEntry.cmd}">Query</span></td>
+						<td><span th:text="${diffLogEntry.orgPlanSummary}">Org Plan Summary</span></td>
+						<td><span th:text="${diffLogEntry.newPlanSummary}">New Plan Summary</span></td>
 					</tr>
 				</tbody>
 				<tfoot>
 					<tr>
 						<th>QueryHash</th>
-						<th>Count</th>
-						<th>Average Duration</th>
-						<th>High Duration</th>
-						<th>Low Duration</th>
+						<th>Org Count</th>
+						<th>New Count</th>
+						<th>Org Average Duration</th>
+						<th>New Average Duration</th>
+						<th>Org High Duration</th>
+						<th>New High Duration</th>
+						<th>Improvement %</th>
 						<th>Query</th>
-						<th>Plan Summary</th>
+						<th>Org Plan Summary</th>
+						<th>New Plan Summary</th>
 					</tr>
 				</tfoot>
 			</table>

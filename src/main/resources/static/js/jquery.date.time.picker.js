@@ -15,6 +15,36 @@ $( function() {
 	}).on( "change", function() {
 		from.datepicker( "option", "maxDate", getDate( this ) );
 	});	
+		
+	function getDate( element ) {
+		var date;
+		try {
+			date = $.datepicker.parseDate( dateFormat, element.value );
+		} catch( error ) {
+			date = null;
+		}
+		return date;
+	}
+});
+
+$( function() {
+	var dateFormat = "mm/dd/yy",
+	orgFrom = $( "#orgFrom" ).datepicker({
+		dateFormat: "mm/dd/yy",
+		defaultDate: "+1w",
+		changeMonth: true,
+		numberOfMonths: 1
+	}).on( "change", function() {
+		orgTo.datepicker( "option", "minDate", getDate( this ) );
+	}),
+	orgTo = $( "#orgTo" ).datepicker({
+		defaultDate: "+1w",
+		changeMonth: true,
+		numberOfMonths: 1
+	}).on( "change", function() {
+		orgFrom.datepicker( "option", "maxDate", getDate( this ) );
+	});	
+	
 	function getDate( element ) {
 		var date;
 		try {

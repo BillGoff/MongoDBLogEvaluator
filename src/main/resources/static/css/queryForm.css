@@ -146,3 +146,9 @@ input:required, textarea:required {
 	width: 100px;
 	text-align: left;
 }​
+
+.disabled-div {
+	opacity: 0.5;
+	background-color: #eee;
+	pointer-events: none;
+}

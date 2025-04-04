@@ -48,6 +48,29 @@
 			$("form").on("submit", function(event) {
 				$.LoadingOverlay("show");
 			});
+			
+			$("#diffAdditionalDates").find("*").prop("disabled", true);
+			$("#diffAdditionalDates a").click(function(e) {
+				e.preventDefault();
+			});
+			
+			$("#diffAdditionalDates").addClass("disabled-div");
+			
+			$('#queryType').on('change', function() { 
+				if(this.value == "diff") {
+					$("#diffAdditionalDates").find("*").prop("disabled", false);
+					$("#diffAdditionalDates a").unbind("click");
+					$("#diffAdditionalDates").removeClass("disabled-div");
+				}
+				else {
+					$("#diffAdditionalDates").find("*").prop("disabled", true);
+					$("#diffAdditionalDates a").click(function(e) {
+						e.preventDefault();
+					});
+					
+					$("#diffAdditionalDates").addClass("disabled-div");
+				}
+ 			});
 		});
 	</script>
 	

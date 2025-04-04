@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.TimeZone;
+import java.text.SimpleDateFormat;
+
 
 
 /**
@@ -58,7 +61,7 @@ class DateUtilsTest {
 	{	
 		try
 		{
-			String guiDateString = "12/15/2024 00:00:00  - 12/18/2024 23:59:00";
+			String guiDateString = "12/15/2024 00:00:00 - 12/18/2024 23:59:00";
 			Date expectedDate = DateUtils.toDate("12/15/2024 00:00:00");
 			Date startDate = DateUtils.getStartDateFromGuiString(guiDateString);
 			
@@ -76,6 +79,30 @@ class DateUtilsTest {
 			}
 			
 			assertTrue(expectedDate.equals(startDate));
+		}
+		catch(ParseException pe)
+		{	
+			pe.printStackTrace();
+			fail("Failed to parse the GUI Date String into a start date!");
+		}
+	}
+
+	@Test
+	void testToUtcDate()
+	{
+		try
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ssZ" );
+			sdf.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+			
+			String altString = "2025-03-24 00:00:00Z";
+			
+			
+			String dateString = "03/24/2025 00:00:00";
+		
+			Date actualDate = DateUtils.toUtcDate(dateString);
+			
+			System.out.println("ActualDate: " + DateUtils.toString(actualDate));
 		}
 		catch(ParseException pe)
 		{	

@@ -12,13 +12,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 public class DateUtils {
 
 	//11/25/2024 - 12/02/2024
-	private static final String dateFormatPattern = "MM/dd/yyyy HH:mm:ss";
+	public static final String dateFormatPattern = "MM/dd/yyyy HH:mm:ss";
+	//public static final String utcDateFormat = "MM/dd/yyyy HH:mm:ss Z";
 	
 	public static final String defaultDateFormat = "MM/dd/yyyy";
 	
@@ -180,6 +182,32 @@ public class DateUtils {
 	public static Date toDate(String dateString) throws ParseException 
 	{
 		SimpleDateFormat formatter = new SimpleDateFormat(dateFormatPattern, Locale.ENGLISH);
+		return formatter.parse(dateString);
+	}
+	
+	/**
+	 * This method is used to convert a String to a java.util.Date.
+	 * @param dateString String to convert to the date.
+	 * @return Date 
+	 * @throws ParseException 
+	 */
+	public static Date toUtcDate(String dateString) throws ParseException 
+	{
+		SimpleDateFormat formatter = new SimpleDateFormat(dateFormatPattern, Locale.ENGLISH);
+		formatter.setTimeZone( TimeZone.getTimeZone( "UTC" ) );
+		return formatter.parse(dateString);
+	}
+	
+	/**
+	 * This method is used to convert a String to a java.util.Date.
+	 * @param dateString String to convert to the date.
+	 * @param dateFormatPattern string value that tells us what the date patter was.
+	 * @return Date 
+	 * @throws ParseException 
+	 */
+	public static Date toDate(String dateString, String pattern) throws ParseException 
+	{
+		SimpleDateFormat formatter = new SimpleDateFormat(pattern, Locale.ENGLISH);
 
 		return formatter.parse(dateString);
 	}

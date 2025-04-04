@@ -3,6 +3,25 @@
 	 	<div id="query-form" class="queryForm">
 	 		<h2> Query Form</h2>
 	 		<form action="#" th:object="${query}" th:action="@{query}" method="post">
+	 		
+	 			<!--  Additional Dates used for Diff Queries. -->
+	 			<div id="diffAdditionalDates" title="Diff Dates">
+					<fieldset>
+						<legend>Diff Additional Dates</legend>
+						<div class="flexi">
+							<div style="padding-right: 5px;">
+								<label for="orgFrom">Org From Date</label>
+								<input type="text" id="orgFrom" name="orgFrom" th:field="*{orgStartDateString}" size="10">
+							</div>
+							<div style="padding-right: 5px;">	
+								<label for="orgTo">Org To Date</label>
+								<input type="text" id="orgTo" name="orgTo" th:field="*{orgEndDateString}" size="10">
+							</div>
+						</div>
+					</fieldset>	
+				</div>
+	 			<!-- Additional dates used for Diff Queries -->
+	 			
 				<fieldset>
 					<div class="flexi">
 						<div style="padding-right: 5px;">

@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.snaplogic.mongodb.eval.dtos.DiffResult;
 import com.snaplogic.mongodb.eval.dtos.LogEntry;
+import com.snaplogic.mongodb.eval.dtos.NodeCount;
 import com.snaplogic.mongodb.eval.dtos.Query;
 import com.snaplogic.mongodb.eval.dtos.Stat;
 import com.snaplogic.mongodb.eval.dtos.SummaryLogEntry;
@@ -27,6 +29,7 @@ import com.snaplogic.mongodb.eval.repositories.LogEntryRepo;
 import com.snaplogic.mongodb.eval.repositories.StatsRepo;
 import com.snaplogic.mongodb.eval.repositories.SummaryRepo;
 import com.snaplogic.mongodb.eval.utils.DateUtils;
+import com.snaplogic.mongodb.eval.utils.DiffResultParser;
 import com.snaplogic.mongodb.eval.utils.DistinctRepoUtil;
 import com.snaplogic.mongodb.eval.utils.StringUtils;
 import com.snaplogic.mongodb.eval.utils.DistinctRepoUtil.DistictFields;
@@ -71,6 +74,7 @@ public class QueryController {
 		try
 		{
 			List<String> queryTypes = new ArrayList<String>();
+			queryTypes.add("countStats");
 			queryTypes.add("frequency");
 			queryTypes.add("summary");
 			queryTypes.add("verbose");
@@ -87,7 +91,7 @@ public class QueryController {
 			
 			defaultQuery.setEndDateString(DateUtils.toString(DateUtils.rightNowDate(), DateUtils.defaultDateFormat));
 
-			defaultQuery.setEndTime("23:30:00");			
+			defaultQuery.setEndTime("23:59:59");			
 			
 		    model.addAttribute("query", defaultQuery);
 		    			
@@ -134,10 +138,11 @@ public class QueryController {
 		System.out.println(query.toString());
 				
 		List<String> queryTypes = new ArrayList<String>();
+		queryTypes.add("diff");
 		queryTypes.add("frequency");
+		queryTypes.add("stats");
 		queryTypes.add("summary");
 		queryTypes.add("verbose");
-		queryTypes.add("stats");
 		
 		DistinctRepoUtil distictUtils = new DistinctRepoUtil();
 	    			
@@ -152,7 +157,40 @@ public class QueryController {
 
 		try
 		{
-			if(query.getQueryType().equalsIgnoreCase("stats"))
+			if(query.getQueryType().equalsIgnoreCase("diff"))
+			{
+				System.out.println("Attempting to do a diff query with: ");
+				System.out.println(query.toString("	"));
+
+				List<DiffResult> diffResults = new ArrayList<DiffResult>();
+				
+				FrequencyRepo repo = new FrequencyRepo();
+				List<SummaryLogEntry> summaryLogEntries = repo.getFrequency(query, mongoTemplate);
+				
+				Query query2 = query.clone();
+				
+				query2.setEndDateString(query.getOrgEndDateString());
+				query2.setStartDateString(query.getOrgStartDateString());
+				
+				List<SummaryLogEntry> summaryLogEntries2 = repo.getFrequency(query2, mongoTemplate);
+				
+				if (DateUtils.toDate(query.getStartDateString(), DateUtils.defaultDateFormat).after(
+						DateUtils.toDate(query2.getStartDateString(), DateUtils.defaultDateFormat)))
+				{
+					diffResults = DiffResultParser.parseSummaryResultsIntoDiffResults(
+							summaryLogEntries2, summaryLogEntries);
+				}
+				else
+				{	
+					diffResults = DiffResultParser.parseSummaryResultsIntoDiffResults(
+							summaryLogEntries, summaryLogEntries2);
+				}
+				
+				model.addAttribute("diffLogEntries", diffResults);
+				
+				return "diff";
+			}
+			else if (query.getQueryType().equalsIgnoreCase("stats"))
 			{
 				StatsRepo statsRepo = new StatsRepo ();
 				List<Stat> stats = statsRepo.getStats(query, mongoTemplate);
@@ -162,6 +200,18 @@ public class QueryController {
 				model.addAttribute("clusterStats", stats);
 				
 				return "stats";
+			}
+			else if(query.getQueryType().equalsIgnoreCase("countStats"))
+			{
+				StatsRepo statsRepo = new StatsRepo ();
+				List<NodeCount> stats = statsRepo.getCounts(query, mongoTemplate);
+				
+				String queryRange = query.getDateRange();
+				
+				model.addAttribute("dateRange", queryRange);
+				model.addAttribute("clusterStats", stats);
+				
+				return "count";
 			}
 			else
 			{	

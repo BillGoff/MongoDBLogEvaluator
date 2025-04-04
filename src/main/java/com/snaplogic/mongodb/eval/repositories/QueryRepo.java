@@ -31,7 +31,7 @@ public class QueryRepo {
 	 * @param value String value to assign to the query.
 	 * @return Criteria used for the query of the field and value passed in.
 	 */
-	private Criteria buildCriteria(String field, String value)
+	protected Criteria buildCriteria(String field, String value)
 	{
 		return(new Criteria(field).is(value.trim()));
 	}
@@ -46,7 +46,7 @@ public class QueryRepo {
 	public Date buildDate(String dateString, String timeString) throws ParseException
 	{
 		String dateTimeString = dateString + " " + timeString;
-		return DateUtils.toDate(dateTimeString);
+		return DateUtils.toUtcDate(dateTimeString);
 	}
 	
 	/**
@@ -55,9 +55,10 @@ public class QueryRepo {
 	 * @return Criteria query criteria for the date range portion of the query.
 	 * @throws ParseException in the event we are unable to parse the date range from the query passed in.
 	 */
-	private Criteria buildDateRange(Query query) throws ParseException
+	public Criteria buildDateRange(Query query) throws ParseException
 	{
 		Date startDate = buildDate(query.getStartDateString(), query.getStartTime());
+		
 		Date endDate = buildDate(query.getEndDateString(), query.getEndTime());
 		
 		Criteria dateRangeCriteria = new Criteria("logEntryDate").gte(startDate).lte(endDate);
