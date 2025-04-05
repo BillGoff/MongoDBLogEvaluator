@@ -26,17 +26,22 @@ import com.snaplogic.mongodb.eval.utils.DateUtils;
 import com.snaplogic.mongodb.eval.utils.StringUtils;
 
 /**
- * 
+ * This class is the Stats Repo Class, it extends Query Repo.  It is used to do the queries to get the Statistics for 
+ * operations that where run.
+ *  
  * @author bgoff
- *
-
- * 
+ * @since 4 Apr 2025
  */
-
 public class StatsRepo extends QueryRepo {	
 		
 	private static final Logger logger = LogManager.getLogger(StatsRepo.class);
 
+	public enum OPERATION {
+		ALL { public String toString() { return "ALL"; } },
+		WRITE {	public String toString() { return "WRITE"; } },
+		READ {	public String toString() { return "READ"; } }
+	};
+	
 /**
  *  * db.logEntry.aggregate([
  * {    $match: {
@@ -70,6 +75,41 @@ public class StatsRepo extends QueryRepo {
  * @return
  * @throws Exception
  */
+	
+	
+	/**
+	 * This query is used to get the over all stats.
+	 * db.logEntry.aggregate([
+	 * {	$match: {
+	 * 			"node": "shard01",
+	 * 			"logEntryDate": {
+	 * 				$gte: ISODate("2025-03-17T00:00:00Z"),
+	 * 				$lte: ISODate("2025-03-17T00:15:00Z")
+	 * 			}
+	 * 		}
+	 * },{	$project: {
+	 * 			node: 1,
+	 * 			hour: { $hour: "$logEntryDate" },
+	 * 			minute: { $minute: "$logEntryDate" },
+	 * 			logEntryDate: 1
+	 * 		}
+	 * },{	$group: {
+	 * 			_id: {
+	 * 				node: "$node",
+	 * 				hour: "$hour",
+	 * 				minute: "$minute"
+	 * 			},
+	 * 			node: { $first: "$node" },
+	 * 			count: { $sum : 1},
+	 * 			startDate: { $first: "$logEntryDate" },
+	 * 		}
+	 * 	},{	$sort: { "startDate": 1 }
+	 * }])
+	 * @param query
+	 * @param mongoTemplate
+	 * @return
+	 * @throws Exception
+	 */
 	public List<Stat> getStats(Query query, MongoTemplate mongoTemplate) throws Exception
 	{
 		List<Stat> stats = new ArrayList<Stat>();
@@ -139,11 +179,11 @@ public class StatsRepo extends QueryRepo {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<NodeCount> getCounts(Query query, MongoTemplate mongoTemplate) throws Exception
+	public List<NodeCount> getCounts(Query query, StatsRepo.OPERATION operation, MongoTemplate mongoTemplate) throws Exception
 	{
 		List<NodeCount> stats = new ArrayList<NodeCount>();
 		
-		MatchOperation matchStage = buildMatchStage(query, "WRITE");
+		MatchOperation matchStage = buildMatchStage(query, operation);
 		
 		GroupOperation group = Aggregation.group("node").count().as("count").first("node").as("node");
 				
@@ -166,7 +206,7 @@ public class StatsRepo extends QueryRepo {
 	 * @return MatchOperation to apply to the mongodb query.
 	 * @throws QueryException if we are unable to build the MatchOperation from the query passed in.
 	 */
-	protected MatchOperation buildMatchStage(Query query, String operation) throws QueryException
+	protected MatchOperation buildMatchStage(Query query, StatsRepo.OPERATION operation) throws QueryException
 	{
 		List<Criteria> queryCriteria = new ArrayList<Criteria>();
 		
@@ -178,18 +218,18 @@ public class StatsRepo extends QueryRepo {
 			Criteria matchCriteria = buildDateRange(query);
 			
 			
-			switch (operation) {
-				case "READ" :
+			switch (operation.toString()) {
+				case "ALL" :
 					//TODO
-					queryCriteria.add(buildCriteria("operation", "WRITE"));
+					break;
+				case "READ" :
+					queryCriteria.add(buildCriteria("msg", "Slow query"));
+					queryCriteria.add(new Criteria("operation").ne("WRITE"));
 					break;
 				default:
 					queryCriteria.add(buildCriteria("operation", "WRITE"));
 
-
 			}
-			
-		
 			if(!query.getEnv().equalsIgnoreCase("all"))
 				queryCriteria.add(buildCriteria("env", query.getEnv()));
 			

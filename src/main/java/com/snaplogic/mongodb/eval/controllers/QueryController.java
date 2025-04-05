@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.snaplogic.mongodb.eval.dtos.DiffResult;
 import com.snaplogic.mongodb.eval.dtos.LogEntry;
@@ -203,13 +206,13 @@ public class QueryController {
 			}
 			else if(query.getQueryType().equalsIgnoreCase("countStats"))
 			{
-				StatsRepo statsRepo = new StatsRepo ();
-				List<NodeCount> stats = statsRepo.getCounts(query, mongoTemplate);
-				
+//				StatsRepo statsRepo = new StatsRepo ();
+//				List<NodeCount> stats = statsRepo.getCounts(query, mongoTemplate);
+//				
 				String queryRange = query.getDateRange();
 				
 				model.addAttribute("dateRange", queryRange);
-				model.addAttribute("clusterStats", stats);
+//				model.addAttribute("clusterStats", stats);
 				
 				return "count";
 			}
@@ -309,6 +312,144 @@ public class QueryController {
 			e.printStackTrace();
 		}
 		return "verbose";
+	}
+	
+	/**
+	 * This method is used to get the Write Operations count.
+	 * @param startDate String value of the start date.
+	 * @param startTime String value of the start time.
+	 * @param endDate String value of the end date.
+	 * @param endTime String value of the end time.
+	 * @param collection String value of the Collection selected (or All if none were selected).
+	 * @param env String value of the environment selected (or All if none where selected).
+	 * @param cluster String value of the cluster (or all if none were selected.
+	 * @return Returns the Json which contains the write Operations metadata.
+	 */
+	@GetMapping("/getWriteCounts")
+	@ResponseBody
+	public List<NodeCount> getWriteCounts(@RequestParam String startDate, @RequestParam String startTime,
+			@RequestParam String endDate, @RequestParam String endTime, @RequestParam String collection,
+			@RequestParam String env, @RequestParam String cluster)
+	{
+		List<NodeCount> stats = new ArrayList<NodeCount>();
+		try
+		{
+			System.out.println("Got a getWriteCounts Request!!!!!");
+			
+			Query query = new Query();
+			query.setStartDateString(startDate);
+			query.setStartTime(startTime);
+			query.setEndDateString(endDate);
+			query.setEndTime(endTime);
+			query.setCluster(cluster);
+			query.setCollection(collection);
+			query.setEnv(env);
+			
+			System.out.println("Query: \n" + query.toString("	"));
+			
+			StatsRepo statsRepo = new StatsRepo ();
+			stats = statsRepo.getCounts(query, StatsRepo.OPERATION.WRITE, mongoTemplate);
+			
+			System.out.println("Returning with " + stats.size() + " stats");
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return stats;
+	}
+	
+	/**
+	 * This method is used to get the Write Operations count.
+	 * @param startDate String value of the start date.
+	 * @param startTime String value of the start time.
+	 * @param endDate String value of the end date.
+	 * @param endTime String value of the end time.
+	 * @param collection String value of the Collection selected (or All if none were selected).
+	 * @param env String value of the environment selected (or All if none where selected).
+	 * @param cluster String value of the cluster (or all if none were selected.
+	 * @return Returns the Json which contains the write Operations metadata.
+	 */
+	@GetMapping("/getReadCounts")
+	@ResponseBody
+	public List<NodeCount> getReadCounts(@RequestParam String startDate, @RequestParam String startTime,
+			@RequestParam String endDate, @RequestParam String endTime, @RequestParam String collection,
+			@RequestParam String env, @RequestParam String cluster)
+	{
+		List<NodeCount> stats = new ArrayList<NodeCount>();
+		try
+		{
+			System.out.println("Got a getReadCounts Request!!!!!");
+			
+			Query query = new Query();
+			query.setStartDateString(startDate);
+			query.setStartTime(startTime);
+			query.setEndDateString(endDate);
+			query.setEndTime(endTime);
+			query.setCluster(cluster);
+			query.setCollection(collection);
+			query.setEnv(env);
+			
+			System.out.println("Query: \n" + query.toString("	"));
+			
+			StatsRepo statsRepo = new StatsRepo ();
+			stats = statsRepo.getCounts(query, StatsRepo.OPERATION.READ, mongoTemplate);
+			
+			System.out.println("Returning with " + stats.size() + " stats");
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return stats;
+	}
+	
+	/**
+	 * This method is used to get the Write Operations count.
+	 * @param startDate String value of the start date.
+	 * @param startTime String value of the start time.
+	 * @param endDate String value of the end date.
+	 * @param endTime String value of the end time.
+	 * @param collection String value of the Collection selected (or All if none were selected).
+	 * @param env String value of the environment selected (or All if none where selected).
+	 * @param cluster String value of the cluster (or all if none were selected.
+	 * @return Returns the Json which contains the write Operations metadata.
+	 */
+	@GetMapping("/getTotalCounts")
+	@ResponseBody
+	public List<NodeCount> getTotalCounts(@RequestParam String startDate, @RequestParam String startTime,
+			@RequestParam String endDate, @RequestParam String endTime, @RequestParam String collection,
+			@RequestParam String env, @RequestParam String cluster)
+	{
+		List<NodeCount> stats = new ArrayList<NodeCount>();
+		try
+		{
+			System.out.println("Got a getWriteCounts Request!!!!!");
+			
+			Query query = new Query();
+			query.setStartDateString(startDate);
+			query.setStartTime(startTime);
+			query.setEndDateString(endDate);
+			query.setEndTime(endTime);
+			query.setCluster(cluster);
+			query.setCollection(collection);
+			query.setEnv(env);
+			
+			System.out.println("Query: \n" + query.toString("	"));
+			
+			StatsRepo statsRepo = new StatsRepo ();
+			stats = statsRepo.getCounts(query, StatsRepo.OPERATION.ALL, mongoTemplate);
+			
+			System.out.println("Returning with " + stats.size() + " stats");
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return stats;
 	}
 	
 	/**

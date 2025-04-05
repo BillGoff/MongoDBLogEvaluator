@@ -1,75 +1,229 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-	<title>MongoDB Web Query</title> 
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-	
-    <link rel="stylesheet" th:href="@{/css/evaluatorMain.css}"/>
-    <link rel="stylesheet" th:href="@{/css/queryForm.css}"/>
-    <link rel="stylesheet" th:href="@{/css/resultTable.css}"/>
-    	
-	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
-	
-	<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
-	
-	<script>
+	<head>
+		<title>MongoDB Web Query</title> 
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		
+		<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+		<script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+		
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+		
+	    <link rel="stylesheet" th:href="@{/css/evaluatorMain.css}"/>
+	    <link rel="stylesheet" th:href="@{/css/queryForm.css}"/>
+	    <link rel="stylesheet" th:href="@{/css/resultTable.css}"/>
+	    	
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.7/dist/loadingoverlay.min.js"></script>
+		
+		<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+		
+		<script>
 			window.onload = function () {
-
-				var dataPoints = [];
-
-				var chart = new CanvasJS.Chart("chartContainer", 
+	
+				var writeDataPoints = [];
+	 			var readDataPoints = [];
+	 			var totalDataPoints = [];
+	
+				var writeOpsChart = new CanvasJS.Chart("writeOpsChartContainer", 
 				{
 					animationEnabled: true,
+					zoomEnabled: true,
 					theme: "dark1",   // "light1", "light2", "dark1", "dark2"
-					title: {
-							text: "Shard Write Count"
-					},
-					axisY: {
-						title: "Number of write Ops"
-					},
-					axisX: {
-						title: "Shard"
-					},
-					data: [{
+					title: { text: "Write Count" },
+					axisY: { title: "# Write Ops" },
+					axisX: { title: "Shard" },
+					data: [	{
 						type: "column",
-						dataPoints: dataPoints
-					}]
+						name: "Write Ops",
+						showInLegend: true,
+						dataPoints: writeDataPoints
+					} ]
 				});
 				
-				chart.render();
-
-				function addData(data) {
-								
+				var readOpsChart = new CanvasJS.Chart("readOpsChartContainer", 
+				{
+					animationEnabled: true,
+					zoomEnabled: true,
+					theme: "dark1",   // "light1", "light2", "dark1", "dark2"
+					title: { text: "Query Count" },
+					axisY: { title: "# Read Ops" },
+					axisX: { title: "Shard" },
+					data: [	{
+						type: "column",
+						name: "Read Ops",
+						showInLegend: true,
+						dataPoints: readDataPoints
+					} ]
+				});
+				
+				var totalOpsChart = new CanvasJS.Chart("totalOpsChartContainer", 
+				{
+					animationEnabled: true,
+					zoomEnabled: true,
+					theme: "dark1",   // "light1", "light2", "dark1", "dark2"
+					title: { text: "Total Count" },
+					axisY: { title: "# All Ops" },
+					axisX: { title: "Shard" },
+					data: [	{
+						type: "column",
+						name: "Total Ops",
+						showInLegend: true,
+						dataPoints: totalDataPoints
+					} ]
+				});
+				
+				writeOpsChart.render();
+				readOpsChart.render();
+				totalOpsChart.render();
+				
+				$("#writeOpsDiv").LoadingOverlay("show", {
+				      text: "Loading write Ops...",
+				      imageHeight: 50,
+				      imageWidth: 50,
+				      style: { "font-size": "10px" }
+			    });
+				
+				$("#readOpsDiv").LoadingOverlay("show", {
+				      text: "Loading read Ops...",
+				      imageHeight: 50,
+				      imageWidth: 50,
+				      style: { "font-size": "10px" }
+			    });
+				
+				$("#totalOpsDiv").LoadingOverlay("show", {
+				      text: "Loading total Ops...",
+				      imageHeight: 50,
+				      imageWidth: 50,
+				      style: { "font-size": "10px" }
+			    });
+				
+				function addWriteOpsData(data) {				
 	 				for (var i = 0; i < data.length; i++) {					
-	 					dataPoints.push({
-	 						label: data[i].node,
-	 						y: data[i].count,
-	 					});
-	 				}
-	 				
-	 				chart.render();
-	 			}
-						    		
-	 			addData(clusterStats);				
+						writeDataPoints.push({
+							color: getShardColor(data[i].node),
+							label: data[i].node,
+							y: data[i].count
+						});
+					}
+					writeOpsChart.render();
+					$("#writeOpsDiv").LoadingOverlay("hide");
+				}
+				
+				function addReadOpsData(data) {					
+					for (var i = 0; i < data.length; i++) {
+						readDataPoints.push({
+							color: getShardColor(data[i].node),
+							label: data[i].node,
+							y: data[i].count
+						});
+					}
+					readOpsChart.render();
+					$("#readOpsDiv").LoadingOverlay("hide");
+				}
+				
+				function addTotalOpsData(data) {					
+					for (var i = 0; i < data.length; i++) {
+						totalDataPoints.push({
+							color: getShardColor(data[i].node),
+							label: data[i].node,
+							y: data[i].count
+						});
+					}
+					totalOpsChart.render();
+					$("#totalOpsDiv").LoadingOverlay("hide");
+				}
+		 			
+	 			$.getJSON("http://localhost:8080/getWriteCounts", 
+	 				{ startDate : myQuery.startDateString, 
+	 				  startTime : myQuery.startTime, 
+	 				  endDate: myQuery.endDateString,
+	 				  endTime: myQuery.endTime,
+	 				  cluster: myQuery.cluster,
+	 				  collection: myQuery.collection,
+	 				  env: myQuery.env 
+					}, addWriteOpsData);
+	
+				$.getJSON("http://localhost:8080/getReadCounts", 
+					{ startDate : myQuery.startDateString, 
+		 			  startTime : myQuery.startTime, 
+		 			  endDate: myQuery.endDateString,
+		 			  endTime: myQuery.endTime,
+					  cluster: myQuery.cluster,
+	 				  collection: myQuery.collection,
+		 			  env: myQuery.env 
+					}, addReadOpsData);
+				
+				$.getJSON("http://localhost:8080/getTotalCounts", 
+					{ startDate : myQuery.startDateString, 
+		 			  startTime : myQuery.startTime, 
+		 			  endDate: myQuery.endDateString,
+		 			  endTime: myQuery.endTime,
+					  cluster: myQuery.cluster,
+	 				  collection: myQuery.collection,
+		 			  env: myQuery.env 
+					}, addTotalOpsData);
 			}
-	</script>
+		</script>
+		
+		<script>
+		
+		function getShardColor(shard) {
+			if (shard == "shard01") {
+				return "blue";
+			}
+			else if (shard == "shard02") {
+				return "green";
+			}
+			else if (shard == "shard03") {
+				return "red";
+			}
+			else if (shard == "shard04") {
+				return "orange";
+			}
+			else if (shard == "shard05") {
+				return "fuchsia";
+			}
+			else if (shard == "shard06") {
+				return "yellow";
+			}
+			else if (shard == "shard07") {
+				return "maroon";
+			}
+			else if (shard == "shard08") {
+				return "purple";
+			}
+			else if (shard == "shard09") {
+				return "olive";
+			}
+			else if (shard == "shard10") {
+				return "white";
+			}
+		}
+		
+		</script>
+		
+		<script th:inline="javascript">	
+	    	/*<![CDATA[*/
+	    	var myQuery = /*[[ ${query} ]]*/;
+	    	/*]]>*/
+		</script>
 	
-	<script th:inline="javascript">
-    	/*<![CDATA[*/
-    	var clusterStats = /*[[${clusterStats}]]*/;
-    	/*]]>*/
-	</script>
-	
-
 	</head>
 
 	<body>
 		<div align="center" th:text="${dateRange}" style="padding-top: 5px; font-weight: bold;"> </div>
 		<div class="box" onclick="window.location.href='http://localhost:8080/home'"></div>
-		<div style="padding:25px; padding-top:15px;">
-			<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+		<div id="writeOpsDiv" style="padding:25px; padding-top:15px;">
+			<div id="writeOpsChartContainer" style="height: 250px; width: 100%;"></div>
+			<div class="busy-indicator" style="display:none;">Loading...</div>
 		</div>
+		<div id="readOpsDiv" style="padding:25px; padding-top:10px;">
+			<div id="readOpsChartContainer" style="height: 250px; width: 100%;"></div>
+			<div class="busy-indicator" style="display:none;">Loading...</div>
+		</div>
+		<div id="totalOpsDiv" style="padding:25px; padding-top:10px;">
+			<div id="totalOpsChartContainer" style="height: 250px; width: 100%;"></div>
+			<div class="busy-indicator" style="display:none;">Loading...</div>
+		</div>			
 	</body>
 </html>                     
