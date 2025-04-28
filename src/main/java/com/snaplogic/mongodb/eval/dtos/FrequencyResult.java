@@ -2,6 +2,11 @@ package com.snaplogic.mongodb.eval.dtos;
 
 import java.io.Serializable;
 
+/**
+ * This Data Transfer Object (DTO) contains the fields that tells us how often each query is seen.
+ * @author bgoff
+ *
+ */
 public class FrequencyResult implements Serializable {
 	
 	private static final long serialVersionUID = 5125913863198964634L;

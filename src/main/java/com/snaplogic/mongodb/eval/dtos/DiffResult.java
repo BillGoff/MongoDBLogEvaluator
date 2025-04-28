@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 import com.snaplogic.mongodb.eval.utils.MathUtils;
 
+/**
+ * This Data Transfer Object (DTO) is the Object that contains the differences between SummaryLogEntries.
+ * @author bgoff
+ *
+ */
 public class DiffResult implements Serializable {
 		
 	private static final long serialVersionUID = 7470725505586840417L;
@@ -21,9 +26,17 @@ public class DiffResult implements Serializable {
 	private Integer orgSum = Integer.valueOf(0);
 	private String queryHash;
 
+	/**
+	 * Base Constructor.
+	 */
 	public DiffResult()
 	{}
 
+	/**
+	 * Constructor that builds the "DiffResult" from two SummaryLogEntry(s).
+	 * @param orgEntry SummaryLogEntry to compare to the "newEntry".
+	 * @param newEntry SummaryLogEntry to compare to the "orgEntry".
+	 */
 	public DiffResult(SummaryLogEntry orgEntry, SummaryLogEntry newEntry)
 	{
 		if(orgEntry.getQueryHash().equalsIgnoreCase(newEntry.getQueryHash()))

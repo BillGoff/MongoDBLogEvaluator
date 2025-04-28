@@ -5,6 +5,11 @@ import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 
+/**
+ * This Data Transfer Object (DTO) contains the fields that make up a single Log Entry.
+ * @author bgoff
+ *
+ */
 public class LogEntry implements Serializable {
 
 	private static final long serialVersionUID = -464978817922751351L;

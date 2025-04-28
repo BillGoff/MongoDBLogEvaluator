@@ -1,6 +1,10 @@
 package com.snaplogic.mongodb.eval.dtos;
 
-
+/**
+ * This Data Transfer Object (DTO) is used to hold a Summary of Log Entries.
+ * @author bgoff
+ *
+ */
 public class SummaryLogEntry implements Comparable <SummaryLogEntry> {
 	
 	private Integer averageDuration = Integer.valueOf(0);

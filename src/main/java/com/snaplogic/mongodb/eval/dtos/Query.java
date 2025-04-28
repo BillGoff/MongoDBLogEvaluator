@@ -2,7 +2,12 @@ package com.snaplogic.mongodb.eval.dtos;
 
 import java.io.Serializable;
 
-
+/**
+ * This Data Transfer Object (DTO) is the base query object.  This is the object that is used to support the gui in 
+ * getting the user's query.
+ * @author bgoff
+ *
+ */
 public class Query implements Serializable, Cloneable {
 	
 	private static final long serialVersionUID = 6008647628545478911L;
