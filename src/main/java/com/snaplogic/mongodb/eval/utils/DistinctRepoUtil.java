@@ -1,6 +1,7 @@
 package com.snaplogic.mongodb.eval.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,12 +40,24 @@ public class DistinctRepoUtil
 	{
 		Date envStartDate = DateUtils.rightNowDate();
 		
-		List<String> distinctValues = new ArrayList<String>();
-		distinctValues.add("All");
-				
-		distinctValues.addAll(mongoTemplate.query(LogEntry.class).distinct(fieldName.toString().toLowerCase()).as(
-				String.class).all());
+		logger.debug("Getting distinct values for " + fieldName.toString());
 		
+		List<String> distinctValues = new ArrayList<String>();
+		
+		List<String> temp = mongoTemplate.query(LogEntry.class).distinct(fieldName.toString().toLowerCase()).as(
+				String.class).all();
+		
+		for(String tempString: temp)
+		{
+			//Lets remove nulls and empty values from the list.
+			if((tempString != null) && (!tempString.trim().isEmpty()))
+				distinctValues.add(tempString.trim());
+		}
+		//Sort these..  Before we add "All" to the beginning.
+		Collections.sort(distinctValues);
+
+		distinctValues.add(0, "All");
+				
 		logger.debug("It took " + DateUtils.computeDiff(envStartDate,
 				DateUtils.rightNowDate()) + " to get the list of Distinct " + fieldName.toString() + "!");
 		

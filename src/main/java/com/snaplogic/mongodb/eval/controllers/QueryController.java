@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -34,9 +33,8 @@ import com.snaplogic.mongodb.eval.repositories.SummaryRepo;
 import com.snaplogic.mongodb.eval.utils.DateUtils;
 import com.snaplogic.mongodb.eval.utils.DiffResultParser;
 import com.snaplogic.mongodb.eval.utils.DistinctRepoUtil;
-import com.snaplogic.mongodb.eval.utils.StringUtils;
 import com.snaplogic.mongodb.eval.utils.DistinctRepoUtil.DistictFields;
-import com.snaplogic.mongodb.eval.utils.SummaryUtils;
+import com.snaplogic.mongodb.eval.utils.StringUtils;
 
 /**
  * This Controller handles all the queries.

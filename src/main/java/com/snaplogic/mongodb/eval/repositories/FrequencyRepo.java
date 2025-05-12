@@ -13,17 +13,14 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
 
-import com.snaplogic.mongodb.eval.dtos.FrequencyResult;
 import com.snaplogic.mongodb.eval.dtos.Query;
 import com.snaplogic.mongodb.eval.dtos.SummaryLogEntry;
 import com.snaplogic.mongodb.eval.utils.DateUtils;
-import com.snaplogic.mongodb.eval.utils.StringUtils;
 
 
 /**
- * This Repository is designed to run the query hash frequency query.
+ * This Repository is designed to run the frequency query.
  * 
  * db.logEntry.aggregate([
  * {	$match: { "logEntryDate": { $gte: ISODate("2025-02-10"), $lte: ISODate("2025-02-14") } }
@@ -37,6 +34,14 @@ public class FrequencyRepo extends QueryRepo {
 		
 	private static final Logger logger = LogManager.getLogger(FrequencyRepo.class);
 
+	/**
+	 * This method is used to build and run a "frequency" query.  A frequency query gets statistics on how many times,
+	 * average duration, high duration, low duration a query is performed over a period of time.
+	 * @param query Query Object that contains the query parameters.
+	 * @param mongoTemplate MongoTemplate this is the MongoDB connection.
+	 * @return List of SummaryLogEntries.
+	 * @throws Exception If we fail to complete the query.
+	 */
 	public List<SummaryLogEntry> getFrequency(Query query, MongoTemplate mongoTemplate) throws Exception
 	{
 		Date envStartDate = DateUtils.rightNowDate();
@@ -71,5 +76,4 @@ public class FrequencyRepo extends QueryRepo {
 		
 		return(results); 
 	}
-
 }

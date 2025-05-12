@@ -145,55 +145,56 @@
 <body>
 	<div class="box" onclick="window.location.href='http://localhost:8080/home'"></div>
 	<div th:replace="fragments/queryForm :: queryFormFrag"></div>
-	<div align="center" th:text="${query.dateRange}" style="padding-top: 10px; font-weight: bold;"> </div>
-		<div style="padding:25px; padding-top:15px;">
-			<table id="mongodbLogTable" class="table table-striped table-spacing" style="width:100%">
-				<thead>
-					<tr>
-						<th>QueryHash</th>
-						<th>Org Count</th>
-						<th>New Count</th>
-						<th>Org Average Duration</th>
-						<th>New Average Duration</th>
-						<th>Org High Duration</th>
-						<th>New High Duration</th>
-						<th>Improvement %</th>
-						<th>Query</th>
-						<th>Org Plan Summary</th>
-						<th>New Plan Summary</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="diffLogEntry : ${diffLogEntries}" th:id="${diffLogEntry.queryHash}">
-						<td><span th:text="${diffLogEntry.queryHash}">QueryHash</span></td>
-						<td class="numberWithCommas"><span th:text="${diffLogEntry.orgSum}">Org Count</span></td>
-						<td class="numberWithCommas"><span th:text="${diffLogEntry.newSum}">New Count</span></td>
-						<td class="msToTimeElement"><span th:text="${diffLogEntry.orgAverageDuration}">Org Average Duration</span></td>
-						<td class="msToTimeElement"><span th:text="${diffLogEntry.newAverageDuration}">new Average Duration</span></td>
-						<td class="msToTimeElement"><span th:text="${diffLogEntry.orgHighDuration}">Org High Duration</span></td>
-						<td class="msToTimeElement"><span th:text="${diffLogEntry.newHighDuration}">New High Duration</span></td>
-						<td><span th:text="${diffLogEntry.improvment}">% Improvement</span></td>						
-						<td><span th:text="${diffLogEntry.cmd}">Query</span></td>
-						<td><span th:text="${diffLogEntry.orgPlanSummary}">Org Plan Summary</span></td>
-						<td><span th:text="${diffLogEntry.newPlanSummary}">New Plan Summary</span></td>
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<th>QueryHash</th>
-						<th>Org Count</th>
-						<th>New Count</th>
-						<th>Org Average Duration</th>
-						<th>New Average Duration</th>
-						<th>Org High Duration</th>
-						<th>New High Duration</th>
-						<th>Improvement %</th>
-						<th>Query</th>
-						<th>Org Plan Summary</th>
-						<th>New Plan Summary</th>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	</body>
+	<div align="center" th:text="${query.orgDateRange}" style="padding-top: 10px; font-weight: bold;"></div>
+	<div align="center" th:text="${query.dateRange}" style="padding-top: 10px; font-weight: bold;"></div>
+	<div style="padding:25px; padding-top:15px;">
+		<table id="mongodbLogTable" class="table table-striped table-spacing" style="width:100%">
+			<thead>
+				<tr>
+					<th>QueryHash</th>
+					<th>Org Count</th>
+					<th>New Count</th>
+					<th>Org Average Duration</th>
+					<th>New Average Duration</th>
+					<th>Org High Duration</th>
+					<th>New High Duration</th>
+					<th>Improvement %</th>
+					<th>Query</th>
+					<th>Org Plan Summary</th>
+					<th>New Plan Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="diffLogEntry : ${diffLogEntries}" th:id="${diffLogEntry.queryHash}">
+					<td><span th:text="${diffLogEntry.queryHash}">QueryHash</span></td>
+					<td class="numberWithCommas"><span th:text="${diffLogEntry.orgSum}">Org Count</span></td>
+					<td class="numberWithCommas"><span th:text="${diffLogEntry.newSum}">New Count</span></td>
+					<td class="msToTimeElement"><span th:text="${diffLogEntry.orgAverageDuration}">Org Average Duration</span></td>
+					<td class="msToTimeElement"><span th:text="${diffLogEntry.newAverageDuration}">new Average Duration</span></td>
+					<td class="msToTimeElement"><span th:text="${diffLogEntry.orgHighDuration}">Org High Duration</span></td>
+					<td class="msToTimeElement"><span th:text="${diffLogEntry.newHighDuration}">New High Duration</span></td>
+					<td><span th:text="${diffLogEntry.improvment}">% Improvement</span></td>						
+					<td><span th:text="${diffLogEntry.cmd}">Query</span></td>
+					<td><span th:text="${diffLogEntry.orgPlanSummary}">Org Plan Summary</span></td>
+					<td><span th:text="${diffLogEntry.newPlanSummary}">New Plan Summary</span></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<th>QueryHash</th>
+					<th>Org Count</th>
+					<th>New Count</th>
+					<th>Org Average Duration</th>
+					<th>New Average Duration</th>
+					<th>Org High Duration</th>
+					<th>New High Duration</th>
+					<th>Improvement %</th>
+					<th>Query</th>
+					<th>Org Plan Summary</th>
+					<th>New Plan Summary</th>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</body>
 </html>

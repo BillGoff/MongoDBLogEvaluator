@@ -13,15 +13,17 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
 
 import com.snaplogic.mongodb.eval.dtos.Query;
 import com.snaplogic.mongodb.eval.dtos.SummaryLogEntry;
 import com.snaplogic.mongodb.eval.utils.DateUtils;
-import com.snaplogic.mongodb.eval.utils.StringUtils;
 
 
-
+/**
+ * This Repository is designed to run the Summary Query.
+ * @author bgoff
+ *
+ */
 public class SummaryRepo extends QueryRepo{	
 		
 	private static final Logger logger = LogManager.getLogger(StatsRepo.class);

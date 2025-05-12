@@ -56,9 +56,7 @@ public class DiffResult implements Serializable {
 			this.setNewSum(newEntry.getSum());
 			this.setOrgSum(orgEntry.getSum());
 			
-			
 			this.setImprovment(MathUtils.calculatePercentage(orgEntry.getHighDuration(), newEntry.getHighDuration()));
-			
 		}
 	}
 

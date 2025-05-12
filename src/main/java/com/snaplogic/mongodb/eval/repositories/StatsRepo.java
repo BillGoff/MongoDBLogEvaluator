@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
@@ -18,12 +17,12 @@ import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 
+import com.snaplogic.mongodb.eval.exception.QueryException;
+import com.snaplogic.mongodb.eval.utils.DateUtils;
 import com.snaplogic.mongodb.eval.dtos.NodeCount;
 import com.snaplogic.mongodb.eval.dtos.Query;
 import com.snaplogic.mongodb.eval.dtos.Stat;
-import com.snaplogic.mongodb.eval.exception.QueryException;
-import com.snaplogic.mongodb.eval.utils.DateUtils;
-import com.snaplogic.mongodb.eval.utils.StringUtils;
+
 
 /**
  * This class is the Stats Repo Class, it extends Query Repo.  It is used to do the queries to get the Statistics for 
@@ -114,7 +113,6 @@ public class StatsRepo extends QueryRepo {
 	{
 		List<Stat> stats = new ArrayList<Stat>();
 		MatchOperation matchStage = buildMatchStage(query);
-		
 				
 		ProjectionOperation projectStage = Aggregation.project().and("node").as("node").
 			and("logEntryDate").as("logEntryDate")

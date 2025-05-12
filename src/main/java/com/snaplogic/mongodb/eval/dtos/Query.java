@@ -42,6 +42,12 @@ public class Query implements Serializable, Cloneable {
 		return (this.getStartDateString() + " " + this.getStartTime() + " - " + 
 				this.getEndDateString() + " " + this.getEndTime());
 	}
+	
+	public String getOrgDateRange() {
+		return (this.getOrgStartDateString() + " " + this.getStartTime() + " - " + 
+				this.getOrgEndDateString() + " " + this.getEndTime());
+	}
+	
 	public String getEndDateString() {
 		return endDateString;
 	}
